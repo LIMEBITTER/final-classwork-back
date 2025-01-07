@@ -1,0 +1,7 @@
+
+# 使用开发环境
+spring:
+  profiles:
+    active: dev
+
+
