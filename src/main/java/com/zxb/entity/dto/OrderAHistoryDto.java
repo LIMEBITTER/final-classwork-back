@@ -15,6 +15,7 @@ public class OrderAHistoryDto {
     private Integer priority;
     private Integer state;
     private Integer creatorId;
+    private String creatorName;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 

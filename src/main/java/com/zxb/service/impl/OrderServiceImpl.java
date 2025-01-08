@@ -1,13 +1,17 @@
 package com.zxb.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxb.entity.Order;
 import com.zxb.entity.OrderHistory;
+import com.zxb.entity.User;
 import com.zxb.entity.dto.FormDto;
 import com.zxb.entity.dto.OrderAHistoryDto;
 import com.zxb.service.OrderService;
 import com.zxb.mapper.OrderMapper;
+import com.zxb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +28,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     implements OrderService{
 
     private final OrderMapper orderMapper;
+    private final UserService userService;
 
     @Autowired
-    public OrderServiceImpl(OrderMapper orderMapper){
+    public OrderServiceImpl(OrderMapper orderMapper,UserService userService){
         this.orderMapper = orderMapper;
+        this.userService = userService;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         for (Order order:orders){
             OrderHistory history = orderMapper.selectLatestHistoryByOrderId(order.getOrderId());
             if (history!=null){
-                final OrderAHistoryDto dto = getOrderAHistoryDto(order, history);
+                OrderAHistoryDto dto = this.getOrderAHistoryDto(order, history);
                 //添加到list中
                 combine.add(dto);
             }
@@ -66,7 +72,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
 
     }
 
-    private static OrderAHistoryDto getOrderAHistoryDto(Order order, OrderHistory history) {
+    private OrderAHistoryDto getOrderAHistoryDto(Order order, OrderHistory history) {
         OrderAHistoryDto dto = new OrderAHistoryDto();
         dto.setOrderId(order.getOrderId());
         dto.setTitle(order.getTitle());
@@ -74,7 +80,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         dto.setOperatorName(history.getOperatorName());
         dto.setPriority(order.getPriority());
         dto.setState(order.getState());
-        dto.setCreatorId(order.getCreatorId());
+
+
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(User::getUserName).eq(User::getId,order.getCreatorId());
+        User user = userService.getOne(queryWrapper);
+
+        dto.setCreatorName(user.getUserName());
         dto.setCreateTime(order.getCreateTime());
         dto.setUpdateTime(order.getUpdateTime());
         return dto;
