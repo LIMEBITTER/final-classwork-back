@@ -5,16 +5,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zxb.common.Result;
 import com.zxb.entity.Role;
 import com.zxb.entity.RolePermission;
+import com.zxb.entity.User;
 import com.zxb.entity.UserRole;
 import com.zxb.service.RolePermissionService;
 import com.zxb.service.RoleService;
 import com.zxb.service.UserRoleService;
+import com.zxb.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,13 +28,15 @@ public class RoleController {
     private final RoleService roleService;
     private final RolePermissionService rolePermissionService;
     private final UserRoleService userRoleService;
+    private final UserService userService;
 
     //构造器注入
     @Autowired
-    public RoleController(RoleService roleService,RolePermissionService rolePermissionService,UserRoleService userRoleService){
+    public RoleController(RoleService roleService,RolePermissionService rolePermissionService,UserRoleService userRoleService,UserService userService){
         this.roleService = roleService;
         this.rolePermissionService = rolePermissionService;
         this.userRoleService = userRoleService;
+        this.userService = userService;
     }
 
     /**
@@ -163,6 +168,29 @@ public class RoleController {
             userRoleService.remove(new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, id));
         });
         return Result.success(roleService.removeByIds(Arrays.asList(ids)));
+    }
+
+    //根据角色唯一标识查询用户组下的users
+
+    @GetMapping("/getUsersByPerm")
+    public Result getUsersByPerm(@RequestParam("perm") String perm){
+
+        LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper();
+        queryWrapper.eq(Role::getPerms,perm);
+        Long roleId = roleService.getOne(queryWrapper).getId();
+
+        LambdaQueryWrapper<UserRole> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(UserRole::getRoleId,roleId);
+        List<Long> userIds = userRoleService.list(queryWrapper1).stream()
+                .map(UserRole::getUserId).toList();
+
+
+        LambdaQueryWrapper<User> queryWrapper2 = new LambdaQueryWrapper<>();
+        queryWrapper2.in(User::getId,userIds);
+        List<User> list = userService.list(queryWrapper2);
+
+        return Result.success(list);
+
     }
 
 

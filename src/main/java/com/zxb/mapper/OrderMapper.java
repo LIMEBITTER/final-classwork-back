@@ -20,7 +20,7 @@ public interface OrderMapper extends BaseMapper<Order> {
     @Select("SELECT * FROM tb_order WHERE title LIKE CONCAT('%', #{title}, '%')")
     List<Order> selectByTitle(String title);
 
-    @Select("SELECT * FROM tb_order_history WHERE order_id = #{orderId} ORDER BY circulation DESC LIMIT 1")
+    @Select("SELECT * FROM tb_order_history WHERE order_id = #{orderId} ORDER BY create_time DESC LIMIT 1")
     OrderHistory selectLatestHistoryByOrderId(String orderId);
 
 

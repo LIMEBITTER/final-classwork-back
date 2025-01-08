@@ -64,9 +64,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
             }
         }
 
+
+        //根据优先级降序
+        combine.sort((dto1,dto2)-> dto2.getPriority().compareTo(dto1.getPriority()));
+
         //构建分页结果
         page.setRecords(combine);
         page.setTotal(combine.size());
+
 
         return page;
 
