@@ -117,7 +117,7 @@ public class OrderController {
         boolean save = orderHistoryService.save(history);
 
         if (save && update){
-            return Result.success();
+            return Result.success("审核成功!");
         }
 
         return Result.error("审核失败！");
