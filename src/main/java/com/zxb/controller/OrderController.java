@@ -203,6 +203,45 @@ public class OrderController {
     }
 
 
+    @PostMapping("/updateOrderState")
+    public Result updateOrder(@RequestParam("orderId") String orderId,
+                              @RequestParam("state") Integer state,
+                              @RequestParam("operatorName") String operatorName){
+        LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Order::getOrderId,orderId);
+
+        OrderHistory history = new OrderHistory();
+
+
+        if (orderId!=null&&operatorName!=null){
+            Order order = orderService.getOne(queryWrapper);
+            history.setOperatorName(operatorName);
+            if (state==4){
+                order.setState(state);
+                orderService.updateById(order);
+
+                history.setOrderId(orderId);
+                history.setCirculation(1);
+                history.setCurrentNode("接受工单");
+                history.setRemark(operatorName+"接受当前工单");
+                orderHistoryService.save(history);
+
+                return Result.success("工单更新成功");
+            }
+            if (state==5){
+                order.setState(state);
+                orderService.updateById(order);
+                history.setOrderId(orderId);
+                history.setCirculation(3);
+                history.setCurrentNode("结束工单");
+                history.setRemark(operatorName+"结束当前工单");
+                orderHistoryService.save(history);
+                return Result.success("工单结束成功");
+            }
+
+        }
+        return Result.error("更新工单状态失败");
+    }
 
 
 
