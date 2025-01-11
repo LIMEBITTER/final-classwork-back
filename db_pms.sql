@@ -11,21 +11,47 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 09/01/2025 21:14:54
+ Date: 11/01/2025 10:09:49
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for tb_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_comment`;
+CREATE TABLE `tb_comment`  (
+  `id` int(0) NOT NULL,
+  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '评论人id',
+  `user_id` int(0) NULL DEFAULT NULL,
+  `parent_id` int(0) NULL DEFAULT NULL COMMENT '父评论id，默认一级评论为0',
+  `content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `role_id` int(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_comment
+-- ----------------------------
+INSERT INTO `tb_comment` VALUES (-2019512318, 'WF20250108112016VLMX', 1, 0, '你好', '2025-01-10 22:29:02', NULL);
+INSERT INTO `tb_comment` VALUES (-1042239486, 'WF20250108112016VLMX', 125, -2019512318, '呵呵哒', '2025-01-10 22:29:51', NULL);
+INSERT INTO `tb_comment` VALUES (-912216063, 'WF20250108112016VLMX', 125, 0, '你你你你你您', '2025-01-10 23:02:52', NULL);
+INSERT INTO `tb_comment` VALUES (-404705279, 'WF20250108112016VLMX', 127, 1369485314, '4444', '2025-01-10 23:11:45', NULL);
+INSERT INTO `tb_comment` VALUES (-85938174, 'WF20250108112016VLMX', 125, -2019512318, '反反复复', '2025-01-10 22:48:48', NULL);
+INSERT INTO `tb_comment` VALUES (1369485314, 'WF20250108112016VLMX', 125, 0, '谢谢', '2025-01-10 22:29:39', NULL);
+INSERT INTO `tb_comment` VALUES (2128654337, 'WF20250108112016VLMX', 125, 1369485314, '嗯嗯', '2025-01-10 22:33:33', NULL);
+
+-- ----------------------------
 -- Table structure for tb_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_detail`;
 CREATE TABLE `tb_detail`  (
-                              `detail_id` int(0) NOT NULL,
-                              `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '20位工单id',
-                              `image_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '上传的图片url',
-                              PRIMARY KEY (`detail_id`) USING BTREE
+  `detail_id` int(0) NOT NULL,
+  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '20位工单id',
+  `image_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '上传的图片url',
+  PRIMARY KEY (`detail_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -40,34 +66,36 @@ INSERT INTO `tb_detail` VALUES (-253743103, 'WF20250108112016VLMX', NULL);
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_file`;
 CREATE TABLE `tb_file`  (
-                            `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
-                            `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '文件名称',
-                            `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '文件类型',
-                            `size` bigint(0) NULL DEFAULT NULL COMMENT '文件大小',
-                            `enable` tinyint(1) NULL DEFAULT 1 COMMENT '是否禁用',
-                            `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '访问路径',
-                            `md5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'md5',
-                            `is_delete` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
-                            PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1026 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '文件上传' ROW_FORMAT = Dynamic;
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '文件名称',
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '文件类型',
+  `size` bigint(0) NULL DEFAULT NULL COMMENT '文件大小',
+  `enable` tinyint(1) NULL DEFAULT 1 COMMENT '是否禁用',
+  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '访问路径',
+  `md5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'md5',
+  `is_delete` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1027 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '文件上传' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_file
 -- ----------------------------
-INSERT INTO `tb_file` VALUES (1024, 'R.jpg', 'jpg', 38, 1, 'http://localhost:90/api/file/09ab762316b1413f8de7af70b84ed3fe.jpg', '528cf5fb9b9315327bb3c7f299352162', 0);
-INSERT INTO `tb_file` VALUES (1025, 'R.jpg', 'jpg', 38, 1, 'http://localhost:90/api/file/09ab762316b1413f8de7af70b84ed3fe.jpg', '528cf5fb9b9315327bb3c7f299352162', 0);
+INSERT INTO `tb_file` VALUES (1024, 'R.jpg', 'jpg', 38, 1, 'http://localhost:90/api/file/09ab762316b1413f8de7af70b84ed3fe.jpg', '528cf5fb9b9315327bb3c7f299352162', 1);
+INSERT INTO `tb_file` VALUES (1025, 'R.jpg', 'jpg', 38, 1, 'http://localhost:90/api/file/09ab762316b1413f8de7af70b84ed3fe.jpg', '528cf5fb9b9315327bb3c7f299352162', 1);
+INSERT INTO `tb_file` VALUES (1026, 'R.jpg', 'jpg', 38, 1, 'http://localhost:90/api/file/09ab762316b1413f8de7af70b84ed3fe.jpg', '528cf5fb9b9315327bb3c7f299352162', 0);
+INSERT INTO `tb_file` VALUES (1027, 'a.png', 'png', 1500, 1, 'http://localhost:90/api/file/d796f6d97d0244ff91a56e1bddb0bf05.png', '69a81eb8c8d3d7887a1726e9857a1ed2', 0);
 
 -- ----------------------------
 -- Table structure for tb_notice
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_notice`;
 CREATE TABLE `tb_notice`  (
-                              `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序列号',
-                              `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标题',
-                              `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
-                              `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                              PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统公告' ROW_FORMAT = Dynamic;
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序列号',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标题',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统公告' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_notice
@@ -83,18 +111,18 @@ INSERT INTO `tb_notice` VALUES (5, 'v-3.0.6', '新增数据可视化图表', '20
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_order`;
 CREATE TABLE `tb_order`  (
-                             `id` int(0) NOT NULL,
-                             `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-                             `priority` tinyint(1) NULL DEFAULT NULL COMMENT '当前工单优先级',
-                             `related_person` int(0) NULL DEFAULT NULL COMMENT '当前流转到的处理人',
-                             `state` int(0) NULL DEFAULT NULL COMMENT '工单当前状态',
-                             `creator_id` int(0) NULL DEFAULT NULL COMMENT '提交工单的人',
-                             `create_time` datetime(0) NULL DEFAULT NULL,
-                             `update_time` datetime(0) NULL DEFAULT NULL,
-                             `detail_id` int(0) NULL DEFAULT NULL COMMENT '当前工单的详细信息',
-                             `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-                             `complaint` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-                             PRIMARY KEY (`id`) USING BTREE
+  `id` int(0) NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `priority` tinyint(1) NULL DEFAULT NULL COMMENT '当前工单优先级',
+  `related_person` int(0) NULL DEFAULT NULL COMMENT '当前流转到的处理人',
+  `state` int(0) NULL DEFAULT NULL COMMENT '工单当前状态',
+  `creator_id` int(0) NULL DEFAULT NULL COMMENT '提交工单的人',
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
+  `detail_id` int(0) NULL DEFAULT NULL COMMENT '当前工单的详细信息',
+  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `complaint` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -102,22 +130,22 @@ CREATE TABLE `tb_order`  (
 -- ----------------------------
 INSERT INTO `tb_order` VALUES (-1621073918, '测试工单12121212', 2, 1, 3, 1, '2025-01-06 21:12:56', '2025-01-09 20:28:22', NULL, 'WF20250106211247AQRH', '31231232132321313123');
 INSERT INTO `tb_order` VALUES (-1415557119, '测试工单-testUser222', 1, 1, 1, 123, '2025-01-09 21:02:43', NULL, NULL, 'WF20250109210225YODF', '测试测试测试');
-INSERT INTO `tb_order` VALUES (-274714623, '普通用户测试工单111', 3, 1, 3, 123, '2025-01-08 11:20:36', '2025-01-09 20:29:20', NULL, 'WF20250108112016VLMX', '玩儿玩儿玩儿玩儿玩儿仍然围绕二二二二娃放到');
+INSERT INTO `tb_order` VALUES (-274714623, '普通用户测试工单111', 3, 1, 5, 123, '2025-01-08 11:20:36', '2025-01-10 15:42:35', NULL, 'WF20250108112016VLMX', '玩儿玩儿玩儿玩儿玩儿仍然围绕二二二二娃放到');
 
 -- ----------------------------
 -- Table structure for tb_order_history
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_order_history`;
 CREATE TABLE `tb_order_history`  (
-                                     `id` int(0) NOT NULL,
-                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT '处理该工单的时间，也就是更新时间',
-                                     `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '工单的id',
-                                     `circulation` int(0) NULL DEFAULT -1 COMMENT '流转状态，e.g.同意，转交，拒绝',
-                                     `operator_id` int(0) NULL DEFAULT NULL COMMENT '当前流程的操作人id',
-                                     `current_node` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '当前处理工单的节点 e.g.提交工单，负责人审批...',
-                                     `operator_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '当前流程的操作人姓名',
-                                     `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '当前操作人的处理意见(备注)',
-                                     PRIMARY KEY (`id`) USING BTREE
+  `id` int(0) NOT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '处理该工单的时间，也就是更新时间',
+  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '工单的id',
+  `circulation` int(0) NULL DEFAULT -1 COMMENT '流转状态，e.g.同意，转交，拒绝',
+  `operator_id` int(0) NULL DEFAULT NULL COMMENT '当前流程的操作人id',
+  `current_node` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '当前处理工单的节点 e.g.提交工单，负责人审批...',
+  `operator_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '当前流程的操作人姓名',
+  `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '当前操作人的处理意见(备注)',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -126,10 +154,12 @@ CREATE TABLE `tb_order_history`  (
 INSERT INTO `tb_order_history` VALUES (-1621073916, '2025-01-06 21:12:56', 'WF20250106211247AQRH', 1, 1, '提交工单', 'admin', NULL);
 INSERT INTO `tb_order_history` VALUES (-1562316799, '2025-01-09 15:35:50', 'WF20250108112016VLMX', 1, NULL, '分配工单', 'admin', 'admin分配给张师傅');
 INSERT INTO `tb_order_history` VALUES (-1398779902, '2025-01-09 21:02:43', 'WF20250109210225YODF', 1, 1, '提交工单', 'admin', NULL);
+INSERT INTO `tb_order_history` VALUES (-1025454079, '2025-01-10 15:42:35', 'WF20250108112016VLMX', 3, NULL, '结束工单', '李师傅', '李师傅结束当前工单');
 INSERT INTO `tb_order_history` VALUES (-744468478, '2025-01-09 20:22:40', 'WF20250106211247AQRH', 1, NULL, '管理员审核', 'admin', '同意处理哈');
 INSERT INTO `tb_order_history` VALUES (-689942527, '2025-01-09 20:28:22', 'WF20250106211247AQRH', 2, NULL, '转交工单', '张师傅', '张师傅转交给郭靖');
 INSERT INTO `tb_order_history` VALUES (-505376766, '2025-01-09 20:01:37', 'WF20250108112016VLMX', 2, NULL, '转交工单', '李师傅', '李师傅转交给郭靖');
 INSERT INTO `tb_order_history` VALUES (-253743102, '2025-01-08 11:20:36', 'WF20250108112016VLMX', 1, 123, '提交工单', 'testUser', NULL);
+INSERT INTO `tb_order_history` VALUES (-94306302, '2025-01-10 15:14:59', 'WF20250108112016VLMX', 1, NULL, '接受工单', '李师傅', '李师傅接受当前工单');
 INSERT INTO `tb_order_history` VALUES (811618307, '2025-01-09 20:23:02', 'WF20250106211247AQRH', 1, NULL, '分配工单', 'admin', 'admin分配给张师傅');
 INSERT INTO `tb_order_history` VALUES (971001858, '2025-01-09 20:29:20', 'WF20250108112016VLMX', 2, NULL, '转交工单', '郭靖', '郭靖转交给李师傅');
 INSERT INTO `tb_order_history` VALUES (1277210626, '2025-01-08 16:55:03', 'WF20250108112016VLMX', 1, NULL, '管理员审核', 'admin', '同意');
@@ -140,20 +170,20 @@ INSERT INTO `tb_order_history` VALUES (2032177153, '2025-01-09 19:58:07', 'WF202
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_permission`;
 CREATE TABLE `tb_permission`  (
-                                  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
-                                  `parent_id` bigint(0) NULL DEFAULT 0 COMMENT '父id',
-                                  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '访问路径',
-                                  `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '组件路径',
-                                  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '图标',
-                                  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '标题',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                                  `status` bigint(0) NULL DEFAULT 1 COMMENT '当前状态',
-                                  `perms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '权限标识',
-                                  `order_num` int(0) NULL DEFAULT 99 COMMENT '排序号',
-                                  `hidden` tinyint(1) NULL DEFAULT 0 COMMENT '是否隐藏',
-                                  `menu_type` tinyint(0) NULL DEFAULT NULL COMMENT '菜单类型',
-                                  PRIMARY KEY (`id`) USING BTREE
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
+  `parent_id` bigint(0) NULL DEFAULT 0 COMMENT '父id',
+  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '访问路径',
+  `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '组件路径',
+  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '图标',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '标题',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `status` bigint(0) NULL DEFAULT 1 COMMENT '当前状态',
+  `perms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '权限标识',
+  `order_num` int(0) NULL DEFAULT 99 COMMENT '排序号',
+  `hidden` tinyint(1) NULL DEFAULT 0 COMMENT '是否隐藏',
+  `menu_type` tinyint(0) NULL DEFAULT NULL COMMENT '菜单类型',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 516 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -275,14 +305,14 @@ INSERT INTO `tb_permission` VALUES (515, 511, '', '', '', '维修员接单', '20
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_role`;
 CREATE TABLE `tb_role`  (
-                            `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
-                            `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '角色名称',
-                            `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '描述',
-                            `perms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '唯一标识',
-                            `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                            `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                            `status` int(0) NULL DEFAULT 1 COMMENT '当前状态',
-                            PRIMARY KEY (`id`) USING BTREE
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '角色名称',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '描述',
+  `perms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '唯一标识',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `status` int(0) NULL DEFAULT 1 COMMENT '当前状态',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -297,10 +327,10 @@ INSERT INTO `tb_role` VALUES (7, '维修人员', '负责维修的人员，拥有
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_role_permission`;
 CREATE TABLE `tb_role_permission`  (
-                                       `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
-                                       `role_id` bigint(0) NULL DEFAULT NULL COMMENT '角色id',
-                                       `permission_id` bigint(0) NULL DEFAULT NULL COMMENT '菜单id',
-                                       PRIMARY KEY (`id`) USING BTREE
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
+  `role_id` bigint(0) NULL DEFAULT NULL COMMENT '角色id',
+  `permission_id` bigint(0) NULL DEFAULT NULL COMMENT '菜单id',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4677 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -359,27 +389,27 @@ INSERT INTO `tb_role_permission` VALUES (4676, 1, 513);
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user`  (
-                            `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
-                            `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '账户名',
-                            `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '密码',
-                            `nick_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
-                            `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
-                            `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-                            `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-                            `status` bigint(0) NULL DEFAULT 0 COMMENT '当前状态',
-                            `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '手机号',
-                            `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邮箱',
-                            `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '这家伙真懒，什么都没留下!' COMMENT '个人简介',
-                            PRIMARY KEY (`id`) USING BTREE
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
+  `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '账户名',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '密码',
+  `nick_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
+  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `status` bigint(0) NULL DEFAULT 0 COMMENT '当前状态',
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '手机号',
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邮箱',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '这家伙真懒，什么都没留下!' COMMENT '个人简介',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 128 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_user
 -- ----------------------------
-INSERT INTO `tb_user` VALUES (1, 'admin', '$2a$10$jQRE3dMPkLvoH5jh0j3ebe0sQkvXViWX20vgDzeKWIqd7gZfyW30W', '管理员', 'http://localhost:90/api/file/99b1dc604ee146d98ef0179e46ef42e2.png', '2023-02-07 00:00:00', '2025-01-06 10:47:16', 1, '17772113398', '18237613715@163.com', '这家伙很懒，什么都没有留下！');
+INSERT INTO `tb_user` VALUES (1, 'admin', '$2a$10$jQRE3dMPkLvoH5jh0j3ebe0sQkvXViWX20vgDzeKWIqd7gZfyW30W', '管理员', 'http://localhost:90/api/file/d796f6d97d0244ff91a56e1bddb0bf05.png', '2023-02-07 00:00:00', '2025-01-10 19:29:28', 1, '17772113398', '18237613715@163.com', '这家伙很懒，什么都没有留下！');
 INSERT INTO `tb_user` VALUES (123, 'testUser', '$2a$10$BwG2RZsrF4Z/4J8SmemmteGTVIYGkVdGh0Pea0GQZwdtyDaF5QFd2', '测试用户1', 'http://localhost:90/api/file/09ab762316b1413f8de7af70b84ed3fe.jpg', '2025-01-05 16:03:48', '2025-01-05 23:34:24', 1, NULL, NULL, '这家伙真懒，什么都没留下!');
 INSERT INTO `tb_user` VALUES (125, 'zhangsan', '$2a$10$qwBeEbIHaa4Tc48OW/4X3e9E.6a9Iu7iJoAkfoJZzzZgineTlk/8q', '张师傅', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '2025-01-08 19:19:55', '2025-01-09 18:21:59', 1, '19988887765', 'zhu@163.com', '这家伙真懒，什么都没留下!');
-INSERT INTO `tb_user` VALUES (126, 'lisiaa', '$2a$10$LLrdcUDy4BkMhk1ynbCpcu0l00AUfq/uAX/RbocR/TldVDUkxq33S', '李师傅', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '2025-01-08 19:20:13', NULL, 1, NULL, NULL, '这家伙真懒，什么都没留下!');
+INSERT INTO `tb_user` VALUES (126, 'lisia', '$2a$10$LLrdcUDy4BkMhk1ynbCpcu0l00AUfq/uAX/RbocR/TldVDUkxq33S', '李师傅', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '2025-01-08 19:20:13', NULL, 1, NULL, NULL, '这家伙真懒，什么都没留下!');
 INSERT INTO `tb_user` VALUES (127, 'guojing', '$2a$10$lD78pt7.9rGlkLqi8VAfSuIiFwfdRjIWTFyP2QBiuEK7Pn7egSsQa', '郭靖', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '2025-01-09 20:01:09', NULL, 1, NULL, NULL, '这家伙真懒，什么都没留下!');
 
 -- ----------------------------
@@ -387,10 +417,10 @@ INSERT INTO `tb_user` VALUES (127, 'guojing', '$2a$10$lD78pt7.9rGlkLqi8VAfSuIiFw
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_user_order`;
 CREATE TABLE `tb_user_order`  (
-                                  `id` int(0) NOT NULL,
-                                  `alloc_user_id` int(0) NULL DEFAULT NULL,
-                                  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-                                  PRIMARY KEY (`id`) USING BTREE
+  `id` int(0) NOT NULL,
+  `alloc_user_id` int(0) NULL DEFAULT NULL,
+  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -404,10 +434,10 @@ INSERT INTO `tb_user_order` VALUES (811618306, 127, 'WF20250106211247AQRH');
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_user_role`;
 CREATE TABLE `tb_user_role`  (
-                                 `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
-                                 `user_id` bigint(0) NULL DEFAULT NULL COMMENT '用户id',
-                                 `role_id` bigint(0) NULL DEFAULT NULL COMMENT '角色id',
-                                 PRIMARY KEY (`id`) USING BTREE
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序号',
+  `user_id` bigint(0) NULL DEFAULT NULL COMMENT '用户id',
+  `role_id` bigint(0) NULL DEFAULT NULL COMMENT '角色id',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 72 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
