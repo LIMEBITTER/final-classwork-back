@@ -3,6 +3,7 @@ package com.zxb.entity;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class Comeback implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 是否已删除
@@ -57,7 +58,7 @@ public class Comeback implements Serializable {
      * 所属工单id
      */
     @TableField(value = "order_id")
-    private Integer orderId;
+    private String orderId;
 
     /**
      * 父评论id
