@@ -2,6 +2,7 @@ package com.zxb.mapper;
 
 import com.zxb.entity.Detail;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author zxb
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-01-06 20:28:31
 * @Entity com.zxb.entity.Detail
 */
+@Mapper
 public interface DetailMapper extends BaseMapper<Detail> {
 
 }

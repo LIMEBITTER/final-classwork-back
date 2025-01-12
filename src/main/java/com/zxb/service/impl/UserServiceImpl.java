@@ -3,11 +3,14 @@ package com.zxb.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxb.entity.User;
+import com.zxb.service.UserRoleService;
 import com.zxb.service.UserService;
 import com.zxb.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
 * @author zxb
@@ -19,6 +22,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
 
     //
+    private final UserRoleService userRoleService;
+
+    @Autowired
+    public UserServiceImpl(UserRoleService userRoleService){
+        this.userRoleService = userRoleService;
+    }
 
     /**
      * 通过sa-token工具类中getLoginId()，获取当前会话中的用户ID
@@ -27,7 +36,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public User getUserInfo() {
-        return this.getById((Serializable) StpUtil.getLoginId());
+
+        User user = this.getById((Serializable) StpUtil.getLoginId());
+
+        user.setRoleIds(userRoleService.getRoleIds(StpUtil.getLoginId(), "PC"));
+
+        return user;
     }
 }
 

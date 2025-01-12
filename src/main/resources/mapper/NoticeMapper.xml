@@ -5,11 +5,19 @@
 <mapper namespace="com.zxb.mapper.NoticeMapper">
 
     <resultMap id="BaseResultMap" type="com.zxb.entity.Notice">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="publishStatus" column="publish_status" jdbcType="INTEGER"/>
+            <result property="publisherName" column="publisher_name" jdbcType="VARCHAR"/>
+            <result property="level" column="level" jdbcType="INTEGER"/>
+            <result property="targetType" column="target_type" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-
+    <sql id="Base_Column_List">
+        id,title,publish_status,
+        publisher_name,level,target_type,
+        create_time,update_time
+    </sql>
 </mapper>

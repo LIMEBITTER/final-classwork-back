@@ -42,10 +42,11 @@ public class ComebackController {
 
     @PostMapping("/add")
     public Result addComment(@RequestBody Comeback comeback){
-        User user = userService.getById(comeback.getUserId());
-        comeback.setUserName(user.getUserName());
-        comeback.setAvatar(user.getAvatar());
-        comeback.setIsDelete(0);
+//        User user = userService.getById(comeback.getUserId());
+//        comeback.setUserName(user.getUserName());
+//        comeback.setAvatar(user.getAvatar());
+//        comeback.setIsDelete(0);
+
         if (comebackService.save(comeback)){
             return Result.success("评论成功");
         }

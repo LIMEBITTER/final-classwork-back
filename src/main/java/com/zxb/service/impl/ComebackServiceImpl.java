@@ -3,8 +3,13 @@ package com.zxb.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxb.entity.Comeback;
+import com.zxb.entity.Role;
+import com.zxb.entity.UserRole;
 import com.zxb.service.ComebackService;
 import com.zxb.mapper.ComebackMapper;
+import com.zxb.service.RoleService;
+import com.zxb.service.UserRoleService;
+import com.zxb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +28,16 @@ public class ComebackServiceImpl extends ServiceImpl<ComebackMapper, Comeback>
     implements ComebackService{
 
     private final ComebackMapper comebackMapper;
+    private final RoleService roleService;
+    private final UserRoleService userRoleService;
+    private final UserService userService;
 
     @Autowired
-    public ComebackServiceImpl(ComebackMapper comebackMapper){
+    public ComebackServiceImpl(ComebackMapper comebackMapper,RoleService roleService,UserRoleService userRoleService,UserService userService){
         this.comebackMapper = comebackMapper;
+        this.roleService = roleService;
+        this.userRoleService = userRoleService;
+        this.userService = userService;
     }
 
     @Override
@@ -35,6 +46,12 @@ public class ComebackServiceImpl extends ServiceImpl<ComebackMapper, Comeback>
         queryWrapper.eq(Comeback::getOrderId,orderId).orderByDesc(Comeback::getCreateTime);
 
         List<Comeback> list = this.list(queryWrapper);
+
+        for (Comeback comeback:list){
+            List<Long> roleIds = userRoleService.getRoleIds(comeback.getUserId(), "PC");
+            comeback.setRole(roleService.listByIds(roleIds).stream().map(Role::getName).toList());
+            comeback.setAvatar(userService.getById(comeback.getUserId()).getAvatar());
+        }
 
         return processComments(list);
     }

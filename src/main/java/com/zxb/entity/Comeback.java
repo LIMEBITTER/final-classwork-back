@@ -79,5 +79,8 @@ public class Comeback implements Serializable {
     private String avatar;
 
     @TableField(exist = false)
+    private List<String> role;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
