@@ -11,37 +11,41 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 11/01/2025 10:09:49
+ Date: 12/01/2025 16:22:51
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for tb_comment
+-- Table structure for tb_comeback
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_comment`;
-CREATE TABLE `tb_comment`  (
-  `id` int(0) NOT NULL,
-  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '评论人id',
-  `user_id` int(0) NULL DEFAULT NULL,
-  `parent_id` int(0) NULL DEFAULT NULL COMMENT '父评论id，默认一级评论为0',
-  `content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
-  `role_id` int(0) NULL DEFAULT NULL,
+DROP TABLE IF EXISTS `tb_comeback`;
+CREATE TABLE `tb_comeback`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '评论id',
+  `content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '评论内容	',
+  `user_id` int(0) NOT NULL COMMENT '评论人id',
+  `user_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '评论人姓名	',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间	',
+  `is_delete` tinyint(0) NULL DEFAULT 0 COMMENT '是否已删除	',
+  `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '所属工单id',
+  `parent_id` int(0) NULL DEFAULT NULL COMMENT '父评论id',
+  `root_parent_id` int(0) NULL DEFAULT NULL COMMENT '根评论id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of tb_comment
+-- Records of tb_comeback
 -- ----------------------------
-INSERT INTO `tb_comment` VALUES (-2019512318, 'WF20250108112016VLMX', 1, 0, '你好', '2025-01-10 22:29:02', NULL);
-INSERT INTO `tb_comment` VALUES (-1042239486, 'WF20250108112016VLMX', 125, -2019512318, '呵呵哒', '2025-01-10 22:29:51', NULL);
-INSERT INTO `tb_comment` VALUES (-912216063, 'WF20250108112016VLMX', 125, 0, '你你你你你您', '2025-01-10 23:02:52', NULL);
-INSERT INTO `tb_comment` VALUES (-404705279, 'WF20250108112016VLMX', 127, 1369485314, '4444', '2025-01-10 23:11:45', NULL);
-INSERT INTO `tb_comment` VALUES (-85938174, 'WF20250108112016VLMX', 125, -2019512318, '反反复复', '2025-01-10 22:48:48', NULL);
-INSERT INTO `tb_comment` VALUES (1369485314, 'WF20250108112016VLMX', 125, 0, '谢谢', '2025-01-10 22:29:39', NULL);
-INSERT INTO `tb_comment` VALUES (2128654337, 'WF20250108112016VLMX', 125, 1369485314, '嗯嗯', '2025-01-10 22:33:33', NULL);
+INSERT INTO `tb_comeback` VALUES (13, '我是奶龙', 127, '郭靖', '2025-01-12 12:46:52', 0, 'WF20250108112016VLMX', NULL, NULL);
+INSERT INTO `tb_comeback` VALUES (14, '我才是奶龙', 127, '郭靖', '2025-01-12 12:46:59', 0, 'WF20250108112016VLMX', 13, 13);
+INSERT INTO `tb_comeback` VALUES (15, '我是奶龙56565', 127, '郭靖', '2025-01-12 12:48:06', 0, 'WF20250108112016VLMX', NULL, NULL);
+INSERT INTO `tb_comeback` VALUES (16, '方法苟富贵', 127, '郭靖', '2025-01-12 12:48:10', 0, 'WF20250108112016VLMX', 15, 15);
+INSERT INTO `tb_comeback` VALUES (17, '你妈的', 1, '管理员', '2025-01-12 16:15:26', 0, 'WF20250108112016VLMX', NULL, NULL);
+INSERT INTO `tb_comeback` VALUES (18, 'shift', 1, '管理员', '2025-01-12 16:15:36', 0, 'WF20250108112016VLMX', 17, 17);
+INSERT INTO `tb_comeback` VALUES (19, 'fuck', 1, '管理员', '2025-01-12 16:15:47', 0, 'WF20250108112016VLMX', 18, 17);
+INSERT INTO `tb_comeback` VALUES (20, '32323232', 1, '管理员', '2025-01-12 16:16:47', 0, 'WF20250108112016VLMX', NULL, NULL);
+INSERT INTO `tb_comeback` VALUES (21, '额问问', 1, '管理员', '2025-01-12 16:16:51', 0, 'WF20250108112016VLMX', 20, 20);
 
 -- ----------------------------
 -- Table structure for tb_detail
@@ -90,21 +94,35 @@ INSERT INTO `tb_file` VALUES (1027, 'a.png', 'png', 1500, 1, 'http://localhost:9
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_notice`;
 CREATE TABLE `tb_notice`  (
-  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '序列号',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标题',
-  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '内容',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '序列号',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `publish_status` int(0) NULL DEFAULT 0,
+  `publisher_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `level` int(0) NULL DEFAULT NULL,
+  `target_type` int(0) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统公告' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_notice
 -- ----------------------------
-INSERT INTO `tb_notice` VALUES (1, 'v3.0.0', '正式发布', '2023-10-24 20:05:32');
-INSERT INTO `tb_notice` VALUES (2, 'v3.0.1', '修复一些已知bug', '2023-10-24 20:11:32');
-INSERT INTO `tb_notice` VALUES (3, 'v3.0.3', '修复一些已知bug,和新增一些功能：（1）加入手机号和邮箱的正则校验（2）加入滑块组件、评分组件、计数器组件等！\n', '2023-12-19 09:33:25');
-INSERT INTO `tb_notice` VALUES (4, 'v3.0.5', '修复一些为止bug，xinz自定义菜单相关配色', '2023-12-26 14:34:44');
-INSERT INTO `tb_notice` VALUES (5, 'v-3.0.6', '新增数据可视化图表', '2023-12-28 14:22:38');
+
+-- ----------------------------
+-- Table structure for tb_notice_role
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_notice_role`;
+CREATE TABLE `tb_notice_role`  (
+  `id` int(0) NOT NULL,
+  `role_id` int(0) NULL DEFAULT NULL,
+  `notice_id` int(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_notice_role
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tb_order
@@ -280,7 +298,7 @@ INSERT INTO `tb_permission` VALUES (308, 305, '', '', '', '删除', '2023-10-23 
 INSERT INTO `tb_permission` VALUES (309, 305, '', '', '', '批量导出', '2023-10-23 18:17:28', NULL, 1, 'sys:li:batch:export', 99, 0, 3);
 INSERT INTO `tb_permission` VALUES (310, 305, '', '', '', '批量删除', '2023-10-23 18:17:28', NULL, 1, 'sys:li:batch:delete', 99, 0, 3);
 INSERT INTO `tb_permission` VALUES (311, 305, '', '', '', '批量导入', '2023-10-23 18:17:28', NULL, 1, 'sys:li:batch:upload', 99, 0, 3);
-INSERT INTO `tb_permission` VALUES (347, 1, '/notice', '/notice/index', 'MessageBox', '系统公告', '2023-10-24 20:02:09', '2023-11-20 21:02:05', 1, 'sys:notice:list', 99, 0, 2);
+INSERT INTO `tb_permission` VALUES (347, 1, '/system/notice', '/notice/index', 'MessageBox', '公告管理', '2023-10-24 20:02:09', '2025-01-12 14:24:24', 1, 'sys:notice:list', 99, 0, 2);
 INSERT INTO `tb_permission` VALUES (348, 347, '', '', '', '新增', '2023-10-24 20:02:09', NULL, 1, 'sys:notice:add', 99, 0, 3);
 INSERT INTO `tb_permission` VALUES (349, 347, '', '', '', '修改', '2023-10-24 20:02:09', NULL, 1, 'sys:notice:update', 99, 0, 3);
 INSERT INTO `tb_permission` VALUES (350, 347, '', '', '', '删除', '2023-10-24 20:02:09', NULL, 1, 'sys:notice:delete', 99, 0, 3);
@@ -406,7 +424,7 @@ CREATE TABLE `tb_user`  (
 -- ----------------------------
 -- Records of tb_user
 -- ----------------------------
-INSERT INTO `tb_user` VALUES (1, 'admin', '$2a$10$jQRE3dMPkLvoH5jh0j3ebe0sQkvXViWX20vgDzeKWIqd7gZfyW30W', '管理员', 'http://localhost:90/api/file/d796f6d97d0244ff91a56e1bddb0bf05.png', '2023-02-07 00:00:00', '2025-01-10 19:29:28', 1, '17772113398', '18237613715@163.com', '这家伙很懒，什么都没有留下！');
+INSERT INTO `tb_user` VALUES (1, 'admin', '$2a$10$jQRE3dMPkLvoH5jh0j3ebe0sQkvXViWX20vgDzeKWIqd7gZfyW30W', '管理员', 'http://localhost:90/api/file/d796f6d97d0244ff91a56e1bddb0bf05.png', '2023-02-07 00:00:00', '2025-01-12 16:19:38', 1, '17772113398', '18237613715@163.com', '这家伙很懒，什么都没有留下！');
 INSERT INTO `tb_user` VALUES (123, 'testUser', '$2a$10$BwG2RZsrF4Z/4J8SmemmteGTVIYGkVdGh0Pea0GQZwdtyDaF5QFd2', '测试用户1', 'http://localhost:90/api/file/09ab762316b1413f8de7af70b84ed3fe.jpg', '2025-01-05 16:03:48', '2025-01-05 23:34:24', 1, NULL, NULL, '这家伙真懒，什么都没留下!');
 INSERT INTO `tb_user` VALUES (125, 'zhangsan', '$2a$10$qwBeEbIHaa4Tc48OW/4X3e9E.6a9Iu7iJoAkfoJZzzZgineTlk/8q', '张师傅', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '2025-01-08 19:19:55', '2025-01-09 18:21:59', 1, '19988887765', 'zhu@163.com', '这家伙真懒，什么都没留下!');
 INSERT INTO `tb_user` VALUES (126, 'lisia', '$2a$10$LLrdcUDy4BkMhk1ynbCpcu0l00AUfq/uAX/RbocR/TldVDUkxq33S', '李师傅', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '2025-01-08 19:20:13', NULL, 1, NULL, NULL, '这家伙真懒，什么都没留下!');
@@ -443,10 +461,10 @@ CREATE TABLE `tb_user_role`  (
 -- ----------------------------
 -- Records of tb_user_role
 -- ----------------------------
-INSERT INTO `tb_user_role` VALUES (64, 1, 1);
 INSERT INTO `tb_user_role` VALUES (67, 123, 6);
 INSERT INTO `tb_user_role` VALUES (69, 125, 7);
 INSERT INTO `tb_user_role` VALUES (70, 126, 7);
 INSERT INTO `tb_user_role` VALUES (71, 127, 7);
+INSERT INTO `tb_user_role` VALUES (75, 1, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
