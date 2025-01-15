@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 12/01/2025 16:22:51
+ Date: 15/01/2025 22:36:55
 */
 
 SET NAMES utf8mb4;
@@ -32,20 +32,16 @@ CREATE TABLE `tb_comeback`  (
   `parent_id` int(0) NULL DEFAULT NULL COMMENT '父评论id',
   `root_parent_id` int(0) NULL DEFAULT NULL COMMENT '根评论id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_comeback
 -- ----------------------------
-INSERT INTO `tb_comeback` VALUES (13, '我是奶龙', 127, '郭靖', '2025-01-12 12:46:52', 0, 'WF20250108112016VLMX', NULL, NULL);
-INSERT INTO `tb_comeback` VALUES (14, '我才是奶龙', 127, '郭靖', '2025-01-12 12:46:59', 0, 'WF20250108112016VLMX', 13, 13);
-INSERT INTO `tb_comeback` VALUES (15, '我是奶龙56565', 127, '郭靖', '2025-01-12 12:48:06', 0, 'WF20250108112016VLMX', NULL, NULL);
-INSERT INTO `tb_comeback` VALUES (16, '方法苟富贵', 127, '郭靖', '2025-01-12 12:48:10', 0, 'WF20250108112016VLMX', 15, 15);
-INSERT INTO `tb_comeback` VALUES (17, '你妈的', 1, '管理员', '2025-01-12 16:15:26', 0, 'WF20250108112016VLMX', NULL, NULL);
-INSERT INTO `tb_comeback` VALUES (18, 'shift', 1, '管理员', '2025-01-12 16:15:36', 0, 'WF20250108112016VLMX', 17, 17);
-INSERT INTO `tb_comeback` VALUES (19, 'fuck', 1, '管理员', '2025-01-12 16:15:47', 0, 'WF20250108112016VLMX', 18, 17);
-INSERT INTO `tb_comeback` VALUES (20, '32323232', 1, '管理员', '2025-01-12 16:16:47', 0, 'WF20250108112016VLMX', NULL, NULL);
-INSERT INTO `tb_comeback` VALUES (21, '额问问', 1, '管理员', '2025-01-12 16:16:51', 0, 'WF20250108112016VLMX', 20, 20);
+INSERT INTO `tb_comeback` VALUES (22, '一级评论', 1, '管理员', '2025-01-12 18:58:24', 0, 'WF20250108112016VLMX', NULL, NULL);
+INSERT INTO `tb_comeback` VALUES (23, '一级评论2', 1, '管理员', '2025-01-12 18:58:39', 0, 'WF20250108112016VLMX', NULL, NULL);
+INSERT INTO `tb_comeback` VALUES (24, '^_^哈哈哈哈哈哈哈哈哈', 1, '管理员', '2025-01-12 18:58:58', 0, 'WF20250108112016VLMX', 23, 23);
+INSERT INTO `tb_comeback` VALUES (25, 'o(*￣︶￣*)o呵呵呵呵呵呵呵呵呵呵', 125, '张师傅', '2025-01-12 18:59:45', 0, 'WF20250108112016VLMX', 24, 23);
+INSERT INTO `tb_comeback` VALUES (26, '大公司电饭锅电饭锅发的更大', 125, '张师傅', '2025-01-12 19:00:27', 0, 'WF20250108112016VLMX', 22, 22);
 
 -- ----------------------------
 -- Table structure for tb_detail
@@ -64,6 +60,7 @@ CREATE TABLE `tb_detail`  (
 INSERT INTO `tb_detail` VALUES (-1621073917, 'WF20250106211247AQRH', NULL);
 INSERT INTO `tb_detail` VALUES (-1398779903, 'WF20250109210225YODF', NULL);
 INSERT INTO `tb_detail` VALUES (-253743103, 'WF20250108112016VLMX', NULL);
+INSERT INTO `tb_detail` VALUES (715165698, 'WF20250115202754DPAP', NULL);
 
 -- ----------------------------
 -- Table structure for tb_file
@@ -96,25 +93,29 @@ DROP TABLE IF EXISTS `tb_notice`;
 CREATE TABLE `tb_notice`  (
   `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '序列号',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `publish_status` int(0) NULL DEFAULT 0,
-  `publisher_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `level` int(0) NULL DEFAULT NULL,
-  `target_type` int(0) NULL DEFAULT NULL,
+  `publish_status` int(0) NULL DEFAULT 0 COMMENT '公告发布状态 0未发布 1已发布',
+  `publisher_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '发布公告者姓名',
+  `level` int(0) NULL DEFAULT NULL COMMENT '公告等级 1低2中3高',
+  `target_type` int(0) NULL DEFAULT NULL COMMENT '公告指向角色 0全体1指定',
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统公告' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统公告' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_notice
 -- ----------------------------
+INSERT INTO `tb_notice` VALUES (26, 'admin通知1', 1, 'admin', 2, 1, '2025-01-15 22:30:50', '2025-01-15 22:31:39', '1111111111111111111111');
+INSERT INTO `tb_notice` VALUES (27, '普通-维修', 1, 'admin', 3, 1, '2025-01-15 22:31:09', '2025-01-15 22:34:47', '22222222222222222');
+INSERT INTO `tb_notice` VALUES (28, '全体', 1, 'admin', 1, 0, '2025-01-15 22:31:26', '2025-01-15 22:34:42', '33333333333333333333333333333333');
 
 -- ----------------------------
 -- Table structure for tb_notice_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_notice_role`;
 CREATE TABLE `tb_notice_role`  (
-  `id` int(0) NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `role_id` int(0) NULL DEFAULT NULL,
   `notice_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -123,13 +124,21 @@ CREATE TABLE `tb_notice_role`  (
 -- ----------------------------
 -- Records of tb_notice_role
 -- ----------------------------
+INSERT INTO `tb_notice_role` VALUES (-1394511870, 1, 26);
+INSERT INTO `tb_notice_role` VALUES (778137601, 1, 28);
+INSERT INTO `tb_notice_role` VALUES (778137602, 6, 28);
+INSERT INTO `tb_notice_role` VALUES (778137603, 7, 28);
+INSERT INTO `tb_notice_role` VALUES (1495306241, 1, 20);
+INSERT INTO `tb_notice_role` VALUES (1495306242, 6, 20);
+INSERT INTO `tb_notice_role` VALUES (1935765506, 6, 27);
+INSERT INTO `tb_notice_role` VALUES (1935765507, 7, 27);
 
 -- ----------------------------
 -- Table structure for tb_order
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_order`;
 CREATE TABLE `tb_order`  (
-  `id` int(0) NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `priority` tinyint(1) NULL DEFAULT NULL COMMENT '当前工单优先级',
   `related_person` int(0) NULL DEFAULT NULL COMMENT '当前流转到的处理人',
@@ -149,6 +158,7 @@ CREATE TABLE `tb_order`  (
 INSERT INTO `tb_order` VALUES (-1621073918, '测试工单12121212', 2, 1, 3, 1, '2025-01-06 21:12:56', '2025-01-09 20:28:22', NULL, 'WF20250106211247AQRH', '31231232132321313123');
 INSERT INTO `tb_order` VALUES (-1415557119, '测试工单-testUser222', 1, 1, 1, 123, '2025-01-09 21:02:43', NULL, NULL, 'WF20250109210225YODF', '测试测试测试');
 INSERT INTO `tb_order` VALUES (-274714623, '普通用户测试工单111', 3, 1, 5, 123, '2025-01-08 11:20:36', '2025-01-10 15:42:35', NULL, 'WF20250108112016VLMX', '玩儿玩儿玩儿玩儿玩儿仍然围绕二二二二娃放到');
+INSERT INTO `tb_order` VALUES (648056833, '发生大范德萨范德萨发的', 1, 1, 3, 1, '2025-01-15 20:28:01', '2025-01-15 20:29:27', NULL, 'WF20250115202754DPAP', '发大水发大幅度发的说法都发发');
 
 -- ----------------------------
 -- Table structure for tb_order_history
@@ -176,11 +186,14 @@ INSERT INTO `tb_order_history` VALUES (-1025454079, '2025-01-10 15:42:35', 'WF20
 INSERT INTO `tb_order_history` VALUES (-744468478, '2025-01-09 20:22:40', 'WF20250106211247AQRH', 1, NULL, '管理员审核', 'admin', '同意处理哈');
 INSERT INTO `tb_order_history` VALUES (-689942527, '2025-01-09 20:28:22', 'WF20250106211247AQRH', 2, NULL, '转交工单', '张师傅', '张师傅转交给郭靖');
 INSERT INTO `tb_order_history` VALUES (-505376766, '2025-01-09 20:01:37', 'WF20250108112016VLMX', 2, NULL, '转交工单', '李师傅', '李师傅转交给郭靖');
+INSERT INTO `tb_order_history` VALUES (-350187519, '2025-01-15 20:28:49', 'WF20250115202754DPAP', 1, NULL, '管理员审核', 'admin', '235423423434442');
 INSERT INTO `tb_order_history` VALUES (-253743102, '2025-01-08 11:20:36', 'WF20250108112016VLMX', 1, 123, '提交工单', 'testUser', NULL);
 INSERT INTO `tb_order_history` VALUES (-94306302, '2025-01-10 15:14:59', 'WF20250108112016VLMX', 1, NULL, '接受工单', '李师傅', '李师傅接受当前工单');
+INSERT INTO `tb_order_history` VALUES (715165699, '2025-01-15 20:28:01', 'WF20250115202754DPAP', 1, 1, '提交工单', 'admin', NULL);
 INSERT INTO `tb_order_history` VALUES (811618307, '2025-01-09 20:23:02', 'WF20250106211247AQRH', 1, NULL, '分配工单', 'admin', 'admin分配给张师傅');
 INSERT INTO `tb_order_history` VALUES (971001858, '2025-01-09 20:29:20', 'WF20250108112016VLMX', 2, NULL, '转交工单', '郭靖', '郭靖转交给李师傅');
 INSERT INTO `tb_order_history` VALUES (1277210626, '2025-01-08 16:55:03', 'WF20250108112016VLMX', 1, NULL, '管理员审核', 'admin', '同意');
+INSERT INTO `tb_order_history` VALUES (1927319554, '2025-01-15 20:29:27', 'WF20250115202754DPAP', 1, NULL, '分配工单', 'admin', 'admin分配给李师傅');
 INSERT INTO `tb_order_history` VALUES (2032177153, '2025-01-09 19:58:07', 'WF20250108112016VLMX', 2, NULL, '转交工单', '张师傅', '张师傅转交给李师傅');
 
 -- ----------------------------
@@ -202,7 +215,7 @@ CREATE TABLE `tb_permission`  (
   `hidden` tinyint(1) NULL DEFAULT 0 COMMENT '是否隐藏',
   `menu_type` tinyint(0) NULL DEFAULT NULL COMMENT '菜单类型',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 516 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 515 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_permission
@@ -317,6 +330,7 @@ INSERT INTO `tb_permission` VALUES (512, 510, '/business/list', '/order/list/ind
 INSERT INTO `tb_permission` VALUES (513, 510, '/business/submit', '/order/submit/index', 'Menu', '工单申请', '2025-01-06 18:25:34', '2025-01-06 19:29:36', 1, 'biz:submit', 1, 0, 2);
 INSERT INTO `tb_permission` VALUES (514, 511, '', '', '', '管理员审核', '2025-01-08 11:31:07', NULL, 1, 'biz:detail:audit', 1, 0, 3);
 INSERT INTO `tb_permission` VALUES (515, 511, '', '', '', '维修员接单', '2025-01-08 20:39:10', NULL, 1, 'biz:detail:acc-rej-order', 1, 0, 3);
+INSERT INTO `tb_permission` VALUES (516, 1, '/system/notice/detail', '/notice/detail/index', 'Printer', '查看公告详情', '2025-01-15 15:33:05', NULL, 1, 'sys:notice:detail', 1, 0, 2);
 
 -- ----------------------------
 -- Table structure for tb_role
@@ -331,12 +345,12 @@ CREATE TABLE `tb_role`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `status` int(0) NULL DEFAULT 1 COMMENT '当前状态',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_role
 -- ----------------------------
-INSERT INTO `tb_role` VALUES (1, '超级管理员', '拥有全部权限', 'admin', '2023-01-22 11:40:31', '2025-01-09 15:53:52', 1);
+INSERT INTO `tb_role` VALUES (1, '超级管理员', '拥有全部权限', 'admin', '2023-01-22 11:40:31', '2025-01-15 15:35:22', 1);
 INSERT INTO `tb_role` VALUES (6, '普通用户', '拥有部分权限', 'user', '2023-02-01 17:32:11', '2025-01-08 11:05:12', 1);
 INSERT INTO `tb_role` VALUES (7, '维修人员', '负责维修的人员，拥有部分权限', 'serviceman', '2025-01-08 19:19:13', '2025-01-08 20:39:32', 1);
 
@@ -349,7 +363,7 @@ CREATE TABLE `tb_role_permission`  (
   `role_id` bigint(0) NULL DEFAULT NULL COMMENT '角色id',
   `permission_id` bigint(0) NULL DEFAULT NULL COMMENT '菜单id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4677 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色菜单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4676 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_role_permission
@@ -369,38 +383,39 @@ INSERT INTO `tb_role_permission` VALUES (4641, 7, 512);
 INSERT INTO `tb_role_permission` VALUES (4642, 7, 513);
 INSERT INTO `tb_role_permission` VALUES (4643, 7, 510);
 INSERT INTO `tb_role_permission` VALUES (4644, 7, 511);
-INSERT INTO `tb_role_permission` VALUES (4645, 1, 1);
-INSERT INTO `tb_role_permission` VALUES (4646, 1, 2);
-INSERT INTO `tb_role_permission` VALUES (4647, 1, 165);
-INSERT INTO `tb_role_permission` VALUES (4648, 1, 166);
-INSERT INTO `tb_role_permission` VALUES (4649, 1, 167);
-INSERT INTO `tb_role_permission` VALUES (4650, 1, 168);
-INSERT INTO `tb_role_permission` VALUES (4651, 1, 174);
-INSERT INTO `tb_role_permission` VALUES (4652, 1, 3);
-INSERT INTO `tb_role_permission` VALUES (4653, 1, 175);
-INSERT INTO `tb_role_permission` VALUES (4654, 1, 176);
-INSERT INTO `tb_role_permission` VALUES (4655, 1, 177);
-INSERT INTO `tb_role_permission` VALUES (4656, 1, 178);
-INSERT INTO `tb_role_permission` VALUES (4657, 1, 179);
-INSERT INTO `tb_role_permission` VALUES (4658, 1, 4);
-INSERT INTO `tb_role_permission` VALUES (4659, 1, 182);
-INSERT INTO `tb_role_permission` VALUES (4660, 1, 183);
-INSERT INTO `tb_role_permission` VALUES (4661, 1, 184);
-INSERT INTO `tb_role_permission` VALUES (4662, 1, 185);
-INSERT INTO `tb_role_permission` VALUES (4663, 1, 212);
-INSERT INTO `tb_role_permission` VALUES (4664, 1, 347);
-INSERT INTO `tb_role_permission` VALUES (4665, 1, 348);
-INSERT INTO `tb_role_permission` VALUES (4666, 1, 349);
-INSERT INTO `tb_role_permission` VALUES (4667, 1, 350);
-INSERT INTO `tb_role_permission` VALUES (4668, 1, 351);
-INSERT INTO `tb_role_permission` VALUES (4669, 1, 352);
-INSERT INTO `tb_role_permission` VALUES (4670, 1, 353);
-INSERT INTO `tb_role_permission` VALUES (4671, 1, 510);
-INSERT INTO `tb_role_permission` VALUES (4672, 1, 511);
-INSERT INTO `tb_role_permission` VALUES (4673, 1, 514);
-INSERT INTO `tb_role_permission` VALUES (4674, 1, 515);
-INSERT INTO `tb_role_permission` VALUES (4675, 1, 512);
-INSERT INTO `tb_role_permission` VALUES (4676, 1, 513);
+INSERT INTO `tb_role_permission` VALUES (4677, 1, 1);
+INSERT INTO `tb_role_permission` VALUES (4678, 1, 2);
+INSERT INTO `tb_role_permission` VALUES (4679, 1, 165);
+INSERT INTO `tb_role_permission` VALUES (4680, 1, 166);
+INSERT INTO `tb_role_permission` VALUES (4681, 1, 167);
+INSERT INTO `tb_role_permission` VALUES (4682, 1, 168);
+INSERT INTO `tb_role_permission` VALUES (4683, 1, 174);
+INSERT INTO `tb_role_permission` VALUES (4684, 1, 3);
+INSERT INTO `tb_role_permission` VALUES (4685, 1, 175);
+INSERT INTO `tb_role_permission` VALUES (4686, 1, 176);
+INSERT INTO `tb_role_permission` VALUES (4687, 1, 177);
+INSERT INTO `tb_role_permission` VALUES (4688, 1, 178);
+INSERT INTO `tb_role_permission` VALUES (4689, 1, 179);
+INSERT INTO `tb_role_permission` VALUES (4690, 1, 4);
+INSERT INTO `tb_role_permission` VALUES (4691, 1, 182);
+INSERT INTO `tb_role_permission` VALUES (4692, 1, 183);
+INSERT INTO `tb_role_permission` VALUES (4693, 1, 184);
+INSERT INTO `tb_role_permission` VALUES (4694, 1, 185);
+INSERT INTO `tb_role_permission` VALUES (4695, 1, 212);
+INSERT INTO `tb_role_permission` VALUES (4696, 1, 516);
+INSERT INTO `tb_role_permission` VALUES (4697, 1, 347);
+INSERT INTO `tb_role_permission` VALUES (4698, 1, 348);
+INSERT INTO `tb_role_permission` VALUES (4699, 1, 349);
+INSERT INTO `tb_role_permission` VALUES (4700, 1, 350);
+INSERT INTO `tb_role_permission` VALUES (4701, 1, 351);
+INSERT INTO `tb_role_permission` VALUES (4702, 1, 352);
+INSERT INTO `tb_role_permission` VALUES (4703, 1, 353);
+INSERT INTO `tb_role_permission` VALUES (4704, 1, 510);
+INSERT INTO `tb_role_permission` VALUES (4705, 1, 511);
+INSERT INTO `tb_role_permission` VALUES (4706, 1, 514);
+INSERT INTO `tb_role_permission` VALUES (4707, 1, 515);
+INSERT INTO `tb_role_permission` VALUES (4708, 1, 512);
+INSERT INTO `tb_role_permission` VALUES (4709, 1, 513);
 
 -- ----------------------------
 -- Table structure for tb_user
@@ -419,7 +434,7 @@ CREATE TABLE `tb_user`  (
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '邮箱',
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '这家伙真懒，什么都没留下!' COMMENT '个人简介',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 128 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 127 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_user
@@ -446,6 +461,7 @@ CREATE TABLE `tb_user_order`  (
 -- ----------------------------
 INSERT INTO `tb_user_order` VALUES (-1629425663, 126, 'WF20250108112016VLMX');
 INSERT INTO `tb_user_order` VALUES (811618306, 127, 'WF20250106211247AQRH');
+INSERT INTO `tb_user_order` VALUES (1927319553, 126, 'WF20250115202754DPAP');
 
 -- ----------------------------
 -- Table structure for tb_user_role
@@ -456,7 +472,7 @@ CREATE TABLE `tb_user_role`  (
   `user_id` bigint(0) NULL DEFAULT NULL COMMENT '用户id',
   `role_id` bigint(0) NULL DEFAULT NULL COMMENT '角色id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 72 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 75 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_user_role
