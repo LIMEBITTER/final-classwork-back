@@ -52,6 +52,9 @@ public class Notice implements Serializable {
     @TableField(value = "target_type")
     private Integer targetType;
 
+    @TableField(value = "content")
+    private String content;
+
     /**
      * 创建时间
      */

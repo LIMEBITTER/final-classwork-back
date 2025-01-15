@@ -74,6 +74,21 @@ public class NoticeController {
         return Result.success(noticeService.removeByIds(Arrays.asList(ids)));
     }
 
+    @GetMapping("/{id}")
+    public Result findOne(@PathVariable Integer id){
+        Notice notice = noticeService.getById(id);
+        return Result.success(notice);
+    }
+
+    @PostMapping("/publish")
+    public Result publish(@RequestParam("id") Integer id,
+                          @RequestParam("status") Integer status){
+        Notice notice = noticeService.getById(id);
+        notice.setPublishStatus(status);
+        return Result.success(noticeService.updateById(notice));
+
+    }
+
 
 
 
