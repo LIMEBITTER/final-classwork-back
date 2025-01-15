@@ -243,6 +243,14 @@ public class OrderController {
         return Result.error("更新工单状态失败");
     }
 
+    @GetMapping("/findByUserId/{id}")
+    public Result findByUserId(@PathVariable Integer id){
+        LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Order::getCreatorId,id);
+
+        return Result.success(orderService.list(queryWrapper));
+    }
+
 
 
 }

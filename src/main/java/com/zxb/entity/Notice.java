@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -68,6 +69,9 @@ public class Notice implements Serializable {
     @JsonFormat( pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
+
+    @TableField(exist = false)
+    private List<Integer> targetRoleIds;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

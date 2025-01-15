@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/notice")
@@ -40,20 +41,40 @@ public class NoticeController {
                            @RequestParam(defaultValue = "1") Integer pageNum,
                            @RequestParam(defaultValue = "10") Integer pageSize){
         return Result.success(noticeService.page(new Page<>(pageNum,pageSize),
-                new LambdaQueryWrapper<Notice>().like(Notice::getTitle,title).orderByDesc(Notice::getId)));
+                new LambdaQueryWrapper<Notice>().like(Notice::getTitle,title).orderByDesc(Notice::getLevel)));
     }
 
     //todo 1.12需要用dto，未完成
     @PostMapping("/save")
+    @Transactional
     public Result save(@RequestBody Notice notice){
+
+        List<Integer> targetRoleIds = notice.getTargetRoleIds();
         noticeService.save(notice);
+        Integer noticeId = notice.getId();
+
+        for (Integer role_id:targetRoleIds){
+            NoticeRole noticeRole = new NoticeRole();
+            noticeRole.setNoticeId(noticeId);
+            noticeRole.setRoleId(role_id);
+            noticeRoleService.save(noticeRole);
+        }
+
 
         return Result.success();
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public Result update(@PathVariable Integer id, @RequestBody Notice notice){
+        List<Integer> targetRoleIds = notice.getTargetRoleIds();
         noticeRoleService.remove(new LambdaQueryWrapper<NoticeRole>().eq(NoticeRole::getNoticeId,id));
+        for (Integer role_id:targetRoleIds){
+            NoticeRole noticeRole = new NoticeRole();
+            noticeRole.setNoticeId(id);
+            noticeRole.setRoleId(role_id);
+            noticeRoleService.save(noticeRole);
+        }
 
         return Result.success(noticeService.updateById(notice));
     }
@@ -77,6 +98,11 @@ public class NoticeController {
     @GetMapping("/{id}")
     public Result findOne(@PathVariable Integer id){
         Notice notice = noticeService.getById(id);
+        System.out.println(notice);
+        List<Integer> roleIds = noticeRoleService
+                .list(new LambdaQueryWrapper<NoticeRole>().eq(NoticeRole::getNoticeId, id))
+                .stream().map(NoticeRole::getRoleId).toList();
+        notice.setTargetRoleIds(roleIds);
         return Result.success(notice);
     }
 
@@ -87,6 +113,20 @@ public class NoticeController {
         notice.setPublishStatus(status);
         return Result.success(noticeService.updateById(notice));
 
+    }
+
+    //通过roleIds查询公告
+    @PostMapping("/findNoticeByRole")
+    public Result findNoticeByRole(@RequestBody List<Integer> ids){
+
+        List<Integer> noticeIds = noticeRoleService
+                .list(new LambdaQueryWrapper<NoticeRole>().in(NoticeRole::getRoleId, ids))
+                .stream().map(NoticeRole::getNoticeId).toList();
+
+        List<Notice> list = noticeService.list(new LambdaQueryWrapper<Notice>().in(Notice::getId, noticeIds).ne(Notice::getPublishStatus, 0));
+
+
+        return Result.success(list);
     }
 
 
