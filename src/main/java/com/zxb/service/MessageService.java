@@ -3,6 +3,7 @@ package com.zxb.service;
 import com.zxb.common.Result;
 import com.zxb.entity.Message;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zxb.entity.dto.MessageForm;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface MessageService extends IService<Message> {
     List<Message> findMsgByTwoPerson(String sendUserId, String receiveUserId);
 
     Result sendMessage(Message message);
+
+    List<MessageForm> searchUserForm(String loginUserId);
 }

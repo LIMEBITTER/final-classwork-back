@@ -40,6 +40,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 .addExclude("/auth/register")
                 .addExclude("/file/**")
                 .addExclude("/imServer/**")
+                .addExclude("/webSocket/**")
 
 
                 // 认证函数: 每次请求执行都会进行拦截

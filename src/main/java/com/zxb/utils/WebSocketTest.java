@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@ServerEndpoint("/test/websocket/{userName}")
+@ServerEndpoint("/test/www/{userName}")
 public class WebSocketTest {
     private String userName;
     private Session session;

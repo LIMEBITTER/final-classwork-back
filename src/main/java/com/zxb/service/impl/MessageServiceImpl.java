@@ -1,21 +1,22 @@
 package com.zxb.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxb.common.Result;
 import com.zxb.entity.Message;
 import com.zxb.entity.User;
+import com.zxb.entity.WebSocket;
+import com.zxb.entity.dto.MessageForm;
 import com.zxb.service.MessageService;
 import com.zxb.mapper.MessageMapper;
 import com.zxb.service.UserService;
+import com.zxb.utils.WebSocketTest2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
 * @author zxb
@@ -28,11 +29,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
 
     private final UserService userService;
     private final MessageMapper messageMapper;
+    private final WebSocketTest2 webSocketUtil;
 
     @Autowired
-    public MessageServiceImpl(UserService userService,MessageMapper messageMapper){
+    public MessageServiceImpl(UserService userService,MessageMapper messageMapper,WebSocketTest2 webSocketUtil){
         this.userService = userService;
         this.messageMapper = messageMapper;
+        this.webSocketUtil = webSocketUtil;
     }
 
     @Override
@@ -62,9 +65,11 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         allMessageList.addAll(receiveMessageList);
         allMessageList.addAll(sendMessageList);
 
-        final List<Message> sortedMessageList = allMessageList.stream()
+        List<Message> sortedMessageList = allMessageList.stream()
                 .sorted(Comparator.comparing(Message::getCreateTime))
                 .toList();
+
+        System.out.println("sort"+sortedMessageList);
 
         //todo 设置已读，暂时没做
         List<Message> noReadMessageList = receiveMessageList.stream()
@@ -109,6 +114,172 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         this.save(message);
 
         return Result.success();
+    }
+
+    @Transactional
+    @Override
+    public List<MessageForm> searchUserForm(String loginUserId) {
+        List<MessageForm> messageFormList = new ArrayList<>();
+        if (loginUserId.isEmpty()){
+            return new ArrayList<>();
+        }
+        User loginUser = userService.getById(loginUserId);
+        if (ObjectUtil.isNull(loginUser)){
+            return new ArrayList<>();
+        }
+//        if (searchUserName.isEmpty()){
+        messageFormList.addAll(findAllMessageForm(loginUser));
+//        }
+
+        return messageFormList;
+    }
+
+
+
+    //获取所有数据
+    private List<MessageForm> findAllMessageForm(User loginUser) {
+        List<MessageForm> messageFormList = new ArrayList<>();
+
+        //获取当前websocket中的users
+        Map<String, WebSocket> users = webSocketUtil.getUsers();
+        Set<String> ids = users.keySet();
+
+        messageFormList.addAll(findAllMessageChatDataWithLoginUserId(loginUser));
+
+        System.out.println("dfdfdfdf"+messageFormList);
+
+
+        // 判断ids是否在messageFormList的sendUser的Id中，不是则获取新的数据到messageFormList
+        for (String id:ids){
+            Long tempId = Long.parseLong(id);
+            if (!messageFormList.stream().map(o->o.getSendUser().getId())
+                    .toList().contains(tempId)
+            ){
+                MessageForm messageForm = new MessageForm();
+                User sendUserData = userService.getById(tempId);
+                if (ObjectUtil.isNull(sendUserData)){
+                    continue;
+                }
+
+                List<Message> allMessageList = findMsgByTwoPerson(String.valueOf(loginUser.getId()),id);
+                messageForm.setMessages(allMessageList);
+                messageForm.setSendUser(sendUserData);
+                messageForm.setReceiveUser(loginUser);
+                messageForm.setIsOnline(true);
+                messageForm.setNoReadMessageLength(0);
+                messageForm.setLastMessage("");
+                messageFormList.add(messageForm);
+            }
+        }
+
+
+        //按照在线状态为true，有聊天记录的优先展示
+
+        messageFormList.sort((o1, o2) -> {
+            if (o1.getIsOnline() && o2.getIsOnline()) {
+                return o2.getMessages().size() - o1.getMessages().size();
+            } else if (o1.getIsOnline()) {
+                return -1;
+            } else if (o2.getIsOnline()) {
+                return 1;
+            } else {
+                return o2.getMessages().size() - o1.getMessages().size();
+            }
+        });
+
+        return messageFormList;
+
+
+    }
+
+    private List<MessageForm> findAllMessageChatDataWithLoginUserId(User loginUser) {
+
+        Map<String, WebSocket> users = webSocketUtil.getUsers();
+        Set<String> ids = users.keySet();
+        List<MessageForm> messageFormList = new ArrayList<>();
+
+        //获取所有发送消息给自己聊天的用户
+        LambdaQueryWrapper<Message> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Message::getReceiveUser,String.valueOf(loginUser.getId()));
+        List<String> allSendUsers = this.list(queryWrapper).stream()
+                .map(Message::getSendUser).distinct().toList();
+        for (String sendUser:allSendUsers){
+            MessageForm messageForm = new MessageForm();
+            //根据id获取当前用户实体
+            User sendUserData = userService.getById(sendUser);
+            if (ObjectUtil.isNull(sendUserData)){
+                continue;
+            }
+
+            List<Message> sortedMessageList = findMsgByTwoPerson(sendUser, String.valueOf(loginUser.getId()));
+
+            System.out.println("当前对话："+sortedMessageList);
+
+            Message lastestMessage = sortedMessageList.stream()
+                    .filter(msg->msg.getReceiveUser().equals(String.valueOf(loginUser.getId())))
+                            .toList().getLast();
+
+            //赋值最新信息
+            messageForm.setLastMessage(
+                    !sortedMessageList.isEmpty() ?lastestMessage
+                            .getContent():""
+            );
+
+            //聊天记录
+            messageForm.setMessages(sortedMessageList);
+            //todo 未读信息
+//            messageForm.setNoReadMessageLength(
+//
+//            );
+
+            //发送人
+            messageForm.setSendUser(sendUserData);
+            //接收人
+            messageForm.setReceiveUser(loginUser);
+            //是否在线
+            messageForm.setIsOnline(ids.contains(sendUser));
+
+            messageFormList.add(messageForm);
+
+        }
+
+        //获取只有自己发送消息给别人的记录的用户
+        LambdaQueryWrapper<Message> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(Message::getSendUser,String.valueOf(loginUser.getId()));
+        List<String> allSendToUsers = this.list(queryWrapper1).stream()
+                .map(Message::getReceiveUser).distinct().toList();
+
+        for (String receiveUser:allSendToUsers){
+            //判断messageFormList的sendUser的userId是否包含receiveUser
+            if (messageFormList.stream().anyMatch(
+                    o->String.valueOf(o.getSendUser().getId()).equals(receiveUser))) {
+                continue;
+            }
+            MessageForm messageForm = new MessageForm();
+            User receiveUserData = userService.getById(receiveUser);
+            if (ObjectUtil.isNull(receiveUserData)){
+                continue;
+            }
+
+            messageForm.setReceiveUser(loginUser);
+            messageForm.setSendUser(receiveUserData);
+            messageForm.setLastMessage("");
+            messageForm.setNoReadMessageLength(0);
+            List<Message> sendMessageList = messageMapper.selectBySendUserAndReceiveUser(String.valueOf(loginUser.getId()), receiveUser);
+
+
+            //参照createTime从小到大
+            messageForm.setMessages(sendMessageList.stream()
+                    .sorted(Comparator.comparing(Message::getCreateTime))
+                    .toList());
+
+            messageForm.setIsOnline(ids.contains(receiveUser));
+
+            messageFormList.add(messageForm);
+
+        }
+
+        return messageFormList;
     }
 }
 
