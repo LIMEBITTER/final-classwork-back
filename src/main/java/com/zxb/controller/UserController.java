@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 @RestController
@@ -176,6 +177,16 @@ public class UserController {
         //遍历，每个用户id都执行删除和下线操作（使用lambda表达式）
         Arrays.asList(ids).forEach(this::removeUserAndLogout);
         return Result.success(userService.removeByIds(Arrays.asList(ids)));
+    }
+
+    //查询所有user的id和avatar
+    @GetMapping("/findUserAndAvatar")
+    public Result findUserAndAvatar(){
+        System.out.println("findUserAndAvatar1111111111111111");
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(User::getId,User::getUserName,User::getAvatar);
+        List<User> list = userService.list(queryWrapper);
+        return Result.success(list);
     }
 
 

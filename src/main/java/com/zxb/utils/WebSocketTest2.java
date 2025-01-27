@@ -1,6 +1,7 @@
 package com.zxb.utils;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.zxb.entity.Message;
@@ -36,7 +37,7 @@ public class WebSocketTest2 {
      **/
     @OnMessage
     public void onMessage(String messageInfo, Session session)
-            throws IOException, InterruptedException {
+            throws IOException {
         if (StringUtils.isBlank(messageInfo)) {
             return;
         }
@@ -44,20 +45,19 @@ public class WebSocketTest2 {
         String userIdTo = session.getPathParameters().get("userId");
         // JSON数据
         log.info("onMessage:{}", messageInfo);
-        System.out.println("接收信息:" + messageInfo + "," + userIdTo);
-//    Map map = JSON.parseObject(messageInfo, Map.class);
-      JSONObject jsonObject = JSONObject.parseObject(messageInfo);
+        JSONObject jsonObject = JSONObject.parseObject(messageInfo);
+        String receiveUser = jsonObject.getString("receiveUser");
+        //接收用户为空：广播
+        if (ObjectUtil.isNull(receiveUser)){
+            // 发送给所有用户
+            sendMessageAll(messageInfo);
+            log.info(DateUtil.now() + " | " + userIdTo + " 广播消息-> " + messageInfo);
+        }else {
+            // 发送给指定用户
+            sendMessageTo(messageInfo, receiveUser);
+            log.info(DateUtil.now() + " | " + userIdTo + " 私人消息-> " + messageInfo, receiveUser);
+        }
 
-      String receiveUser = jsonObject.getString("receiveUser");
-        System.out.println("recceiii"+receiveUser);
-//    // 接收人
-//    String userId = (String) map.get("userId");
-//    // 消息内容
-//    String message = (String) map.get("message");
-
-        // 发送给指定用户
-        sendMessageTo(messageInfo, receiveUser);
-        log.info(DateUtil.now() + " | " + userIdTo + " 私人消息-> " + messageInfo, userIdTo);
     }
 
     /**
@@ -122,8 +122,6 @@ public class WebSocketTest2 {
      **/
     public void sendMessageTo(String message, String userId) throws IOException {
         for (WebSocket user : userMap.values()) {
-            System.out.println(user+"dangqdfd"+userMap.values());
-
             if (user.getUserId().equals(userId)) {
                 System.out.println("用户:" + userId + "收到信息:" + message);
                 user.getSession().getAsyncRemote().sendText(message);

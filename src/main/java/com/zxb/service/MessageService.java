@@ -19,4 +19,6 @@ public interface MessageService extends IService<Message> {
     Result sendMessage(Message message);
 
     List<MessageForm> searchUserForm(String loginUserId);
+
+    MessageForm getBroadcastMessages(Integer userId);
 }

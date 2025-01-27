@@ -89,8 +89,8 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     @Override
     public Result sendMessage(Message message) {
 
+
         if (message.getSendUser().isEmpty()
-                ||message.getReceiveUser().isEmpty()
                 ||message.getContent().isEmpty()){
             return Result.error("消息实体任意都不能为空!");
         }
@@ -104,12 +104,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         }
 
         User receiveUser = userService.getById(message.getReceiveUser());
-        if (ObjectUtil.isNull(receiveUser)){
-            return Result.error("接收用户不存在!");
+        if (ObjectUtil.isNotNull(receiveUser)){
+//            return Result.error("接收用户不存在!");
+            if (receiveUser.getStatus()!=1){
+                return Result.error("当前账户已冻结，无法接收消息!");
+            }
         }
-        if (receiveUser.getStatus()!=1){
-            return Result.error("当前账户已冻结，无法接收消息!");
-        }
+
 
         this.save(message);
 
@@ -134,6 +135,24 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         return messageFormList;
     }
 
+    @Override
+    public MessageForm getBroadcastMessages(Integer userId) {
+        MessageForm messageForm = new MessageForm();
+
+        LambdaQueryWrapper<Message> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.isNull(Message::getReceiveUser).orderByAsc(Message::getCreateTime);
+        List<Message> list = this.list(queryWrapper);
+
+        messageForm.setLastMessage(!list.isEmpty()?list.getLast().getContent():"");
+
+        messageForm.setNoReadMessageLength(list.stream().filter(s->s.getIsRead().equals(0)).toList().size());
+
+        messageForm.setSendUser(userService.getById(userId));
+
+        messageForm.setMessages(list);
+
+        return messageForm;
+    }
 
 
     //获取所有数据
@@ -145,8 +164,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
         Set<String> ids = users.keySet();
 
         messageFormList.addAll(findAllMessageChatDataWithLoginUserId(loginUser));
-
-        System.out.println("dfdfdfdf"+messageFormList);
 
 
         // 判断ids是否在messageFormList的sendUser的Id中，不是则获取新的数据到messageFormList
@@ -212,8 +229,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
             }
 
             List<Message> sortedMessageList = findMsgByTwoPerson(sendUser, String.valueOf(loginUser.getId()));
-
-            System.out.println("当前对话："+sortedMessageList);
 
             Message lastestMessage = sortedMessageList.stream()
                     .filter(msg->msg.getReceiveUser().equals(String.valueOf(loginUser.getId())))

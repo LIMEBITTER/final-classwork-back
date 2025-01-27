@@ -7,4 +7,5 @@ import lombok.Data;
 public class WebSocket {
     private Session session;
     private String userId;
+
 }

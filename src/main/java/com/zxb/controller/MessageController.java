@@ -36,7 +36,6 @@ public class MessageController {
     @PostMapping("/sendMessage")
     public Result sendMessage(@RequestBody Message message){
 
-
         return messageService.sendMessage(message);
     }
 
@@ -45,6 +44,14 @@ public class MessageController {
     public Result searchUserForm(@RequestParam("loginUserId") String loginUserId){
         List<MessageForm> messages = messageService.searchUserForm(loginUserId);
         return Result.success(messages);
+    }
+
+    //查询公共广播中所有的message
+    @GetMapping("/getBroadcastMessages")
+    public Result getBroadcastMessages(@RequestParam("loginUserId") Integer loginUserId){
+        System.out.println("public message-00000000000000000000-0-==============");
+        MessageForm messageList = messageService.getBroadcastMessages(loginUserId);
+        return Result.success(messageList);
     }
 
 
