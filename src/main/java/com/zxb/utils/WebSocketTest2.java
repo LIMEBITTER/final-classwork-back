@@ -50,8 +50,9 @@ public class WebSocketTest2 {
         //接收用户为空：广播
         if (ObjectUtil.isNull(receiveUser)){
             // 发送给所有用户
-            sendMessageAll(messageInfo);
             log.info(DateUtil.now() + " | " + userIdTo + " 广播消息-> " + messageInfo);
+            sendMessageAll(messageInfo);
+
         }else {
             // 发送给指定用户
             sendMessageTo(messageInfo, receiveUser);
@@ -79,7 +80,7 @@ public class WebSocketTest2 {
         log.info("打开连接触发事件!已连接用户: " + userId);
         log.info("当前在线人数: " + loginCount);
         Message message = new Message();
-        message.setContent(userId + " 已连接");
+        message.setContent(userId+","+loginCount);
         sendMessageAll(JSONObject.toJSONString(message));
     }
 

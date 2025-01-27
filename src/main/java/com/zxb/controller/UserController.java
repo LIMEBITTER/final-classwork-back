@@ -182,7 +182,6 @@ public class UserController {
     //查询所有user的id和avatar
     @GetMapping("/findUserAndAvatar")
     public Result findUserAndAvatar(){
-        System.out.println("findUserAndAvatar1111111111111111");
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(User::getId,User::getUserName,User::getAvatar);
         List<User> list = userService.list(queryWrapper);
