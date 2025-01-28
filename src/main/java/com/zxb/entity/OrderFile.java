@@ -8,26 +8,26 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * 
+ *
  * @TableName tb_order_file
  */
 @TableName(value ="tb_order_file")
 @Data
 public class OrderFile implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 
+     *
      */
     @TableField(value = "order_id")
-    private Integer orderId;
+    private String orderId;
 
     /**
-     * 
+     *
      */
     @TableField(value = "file_id")
     private Integer fileId;

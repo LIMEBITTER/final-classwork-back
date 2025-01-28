@@ -10,8 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zxb.common.Constant;
 import com.zxb.common.Result;
 import com.zxb.entity.Files;
+import com.zxb.entity.OrderFile;
 import com.zxb.entity.User;
 import com.zxb.service.FileService;
+import com.zxb.service.OrderFileService;
 import com.zxb.service.UserService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,12 +40,14 @@ public class FileController {
 
     private final FileService fileService;
     private final UserService userService;
+    private final OrderFileService orderFileService;
 
     //构造器注入
     @Autowired
-    public FileController(FileService fileService,UserService userService){
+    public FileController(FileService fileService,UserService userService,OrderFileService orderFileService){
         this.fileService = fileService;
         this.userService = userService;
+        this.orderFileService = orderFileService;
     }
 
     /**
@@ -71,11 +76,6 @@ public class FileController {
             uploadFile.getParentFile().mkdirs();
         }
 
-
-
-
-
-
         // 3.获取文件的url
         String url;
         // 上传文件到磁盘
@@ -100,10 +100,6 @@ public class FileController {
             updateUser.setAvatar(url);
             userService.updateById(updateUser);
         }
-
-
-
-
         // 4.再存储到数据库
         Files saveFile = new Files();
         saveFile.setName(originalFilename);
@@ -212,6 +208,77 @@ public class FileController {
         });
 
         return Result.success();
+    }
+
+    //批量添加图片
+    @PostMapping("/uploadBatch/{orderId}")
+    public Result saveBatch(@RequestParam("files") MultipartFile[] files,
+                            @PathVariable String orderId) throws IOException {
+        System.out.println("=====================进入批量======================");
+        List<Files> filesList = new ArrayList<>();
+        List<String> urls = new ArrayList<>();
+        List<OrderFile> orderFiles = new ArrayList<>();
+
+        for (MultipartFile file:files){
+            String originalFilename = file.getOriginalFilename();
+
+            String type = FileUtil.extName(originalFilename);
+            long size = file.getSize();
+
+            String uuid = IdUtil.fastSimpleUUID();
+            String fileUUID = uuid+StrUtil.DOT+type;
+            File uploadFile = new File(fileUploadPath+fileUUID);
+            if (!uploadFile.getParentFile().exists()){
+                uploadFile.getParentFile().mkdirs();
+            }
+            String url;
+            file.transferTo(uploadFile);
+            String md5 = SecureUtil.md5(uploadFile);
+            Files dbFiles = getFileByMd5(md5);
+
+            System.out.println("filefilfielfjeljfajsjd"+dbFiles);
+
+            if (dbFiles!=null){
+                url = dbFiles.getUrl();
+                urls.add(url);
+                OrderFile orderFile = new OrderFile();
+                orderFile.setFileId(Math.toIntExact(dbFiles.getId()));
+                orderFile.setOrderId(orderId);
+                orderFileService.save(orderFile);
+                uploadFile.delete();
+            }else {
+                url = Constant.FILE_UPLOAD_ADDRESS+fileUUID;
+                Files saveFile = new Files();
+                saveFile.setName(originalFilename);
+                saveFile.setType(type);
+                saveFile.setSize(size/1024);
+                saveFile.setUrl(url);
+                saveFile.setMd5(md5);
+                urls.add(url);
+                filesList.add(saveFile);
+                fileService.save(saveFile);
+                Long image_id = saveFile.getId();
+                OrderFile orderFile = new OrderFile();
+                orderFile.setFileId(Math.toIntExact(image_id));
+                orderFile.setOrderId(orderId);
+                orderFileService.save(orderFile);
+            }
+
+
+        }
+
+        return Result.success();
+    }
+
+    @GetMapping("/getOrderImages/{orderId}")
+    public Result getOrderImages(@PathVariable String orderId){
+        System.out.println("================================");
+        LambdaQueryWrapper<OrderFile> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(OrderFile::getFileId).eq(OrderFile::getOrderId,orderId);
+        List<Integer> ids = orderFileService.list(queryWrapper).stream().map(OrderFile::getFileId).toList();
+        System.out.println("list"+ids);
+        List<Files> filesList = fileService.listByIds(ids);
+        return Result.success(filesList);
     }
 
 }
